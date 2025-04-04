@@ -1,0 +1,39 @@
+import pigpio
+import time
+
+class Encoder:
+    def __init__(self, pinA, pinB):
+        self.pinA = 16
+        self.pinB = 26
+        self.encoder_count = 0
+        self.last_time = time.time()
+        self.pi = pigpio.pi()
+
+        # Configura i pin come input
+        self.pi.set_mode(pinA, pigpio.INPUT)
+        self.pi.set_mode(pinB, pigpio.INPUT)
+
+        # Aggiungi callback per gli interrupt
+        self.pi.callback(pinA, pigpio.EITHER_EDGE, self._update_count)
+
+    def _update_count(self, gpio, level, tick):
+        state_a = self.pi.read(self.pinA)
+        state_b = self.pi.read(self.pinB)
+        if state_a == state_b:
+            self.encoder_count += 1  # Senso orario
+        else:
+            self.encoder_count -= 1  # Senso antiorario
+
+    def get_count(self):
+        return self.encoder_count
+
+    def reset_count(self):
+        self.encoder_count = 0
+
+    def get_rpm(self):
+        current_time = time.time()
+        time_elapsed = current_time - self.last_time
+        rpm = (self.encoder_count / 48.0) * (60.0 / time_elapsed)  # 48 impulsi per giro
+        self.last_time = current_time
+        self.encoder_count = 0  # Resetta il conteggio dopo il calcolo
+        return rpm

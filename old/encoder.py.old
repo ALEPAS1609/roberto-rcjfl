@@ -1,0 +1,42 @@
+import pigpio
+import time
+
+# Definizione dei pin dell'encoder
+ENCODER_A = 16
+ENCODER_B = 26
+
+# Variabili per il conteggio degli impulsi
+encoder_count = 0
+last_time = time.time()
+rpm = 0
+
+# Inizializzazione di pigpio
+pi = pigpio.pi()
+
+# Funzione di callback per l'encoder
+def encoder_callback(gpio, level, tick):
+    global encoder_count
+    state_a = pi.read(ENCODER_A)
+    state_b = pi.read(ENCODER_B)
+    if state_a == state_b:
+        encoder_count += 1  # Rotazione in senso orario
+    else:
+        encoder_count -= 1  # Rotazione in senso antiorario
+
+# Configurazione degli interrupt
+pi.callback(ENCODER_A, pigpio.EITHER_EDGE, encoder_callback)
+
+try:
+    while True:
+        # Calcola la velocità (RPM) ogni secondo
+        current_time = time.time()
+        if current_time - last_time >= 1.0:
+            rpm = (encoder_count / 48.0) * 60.0  # 48 impulsi per giro in quadratura
+            print(f"RPM: {rpm:.2f}")
+
+            # Resetta il conteggio e il tempo
+            encoder_count = 0
+            last_time = current_time
+        time.sleep(0.01)
+except KeyboardInterrupt:
+    pi.stop()
