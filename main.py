@@ -10,7 +10,7 @@ try:
     while True:
         drive.run(0, 0)
         time.sleep(0.02)
-        Encoder.print
+        Encoder.print()
         print(f"Encoder 1 RPM: {encoder1.get_rpm():.2f} | Encoder 2 RPM: {encoder2.get_rpm():.2f}")
 
 
@@ -22,5 +22,5 @@ except KeyboardInterrupt:
 finally:
     drive.stop()       # Stop motors
     drive.cleanup()    # Clean up GPIO
-    Encoder.cleanup
+    Encoder.cleanup()
     print("GPIO cleanup complete. Exiting program.")        
