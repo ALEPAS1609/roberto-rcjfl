@@ -56,11 +56,22 @@ class DriveBase:
 
         speedr = speed * ((90-abs(angle))/90)
         if(angle >=0):
-            DriveBase.lx(self, speed)
-            DriveBase.rx(self, speedr)
+            self.lx(speed)
+            self.rx(speedr)
         else:
-            DriveBase.lx(self, speedr)
-            DriveBase.rx(self, speed)
+            self.lx(speedr)
+            self.rx(speed)
+
+    def straight(self, speed, distance):
+        self.stop()
+        time.sleep(0)
+        self.run(speed)
+        encoder.Distance()
+        time.sleep(encoder.getDistance() < distance)
+        self.stop()
+        encoder.getDistance(True)
+
+
 
     def turn(self, speed, angle):
         self.stop()
