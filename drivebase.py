@@ -1,5 +1,9 @@
 import RPi.GPIO as GPIO
+from encoder import Encoder
+import time
 GPIO.cleanup()
+encoder = Encoder()
+
 
 
 class DriveBase:
@@ -58,6 +62,32 @@ class DriveBase:
             DriveBase.lx(self, speedr)
             DriveBase.rx(self, speed)
 
+    def turn(self, speed, angle):
+        self.stop()
+        time.sleep(0)
+        if(angle >0):
+            self.run(speed, 180)
+        else:
+            self.run(speed, -180)
+        
+        encoder.Rotation_turn()
+        time.sleep(encoder.getRotation(False) < angle)
+        self.stop()
+        encoder.getRotation(True)
+
+    def steer(self, speed, angle):
+        self.stop()
+        time.sleep(0)
+        if(angle >0):
+            self.run(speed, 90)
+        else:
+            self.run(speed, -90)
+        
+        encoder.Rotation_steer()
+        time.sleep(encoder.getRotation(False) < angle)
+        self.stop()
+        encoder.getRotation(True)
+
 
 
     def stop(self):
@@ -74,4 +104,5 @@ class DriveBase:
         self.pwm_rx0.stop()
         self.pwm_rx1.stop()
         GPIO.cleanup()
+        encoder.cleanup()
 
