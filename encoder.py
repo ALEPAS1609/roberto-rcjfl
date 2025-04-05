@@ -27,7 +27,9 @@ class Encoder:
         if (reset):
             self.distop = True
             self.distop = False
-        
+        return self.distance
+
+    def print(self):    
         print(f"lx: {self.encoder_lx.steps} rx: {self.encoder_rx.steps}")
         
 
