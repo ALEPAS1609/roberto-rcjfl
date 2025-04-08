@@ -3,14 +3,13 @@ from encoder import Encoder
 import numpy as np
 import time
 
-encoder = Encoder()
+
 try:
     drive = DriveBase()
-    
+
     while True:
-        drive.run(0, 0)
-        time.sleep(0.02)
-        encoder.print()
+        drive.straight(50, 10)
+        time.sleep(2)
 
 
 
@@ -21,5 +20,5 @@ except KeyboardInterrupt:
 finally:
     drive.stop()       # Stop motors
     drive.cleanup()    # Clean up GPIO
-    encoder.cleanup()
+    Encoder.cleanup() 
     print("GPIO cleanup complete. Exiting program.")        

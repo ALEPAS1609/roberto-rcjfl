@@ -63,13 +63,13 @@ class DriveBase:
             self.rx(speed)
 
     def straight(self, speed, distance):
+        start = (encoder.lx() + encoder.rx()) / 2
+        actual = (encoder.lx() + encoder.rx()) / 2
+        while(encoder.Distance(start, actual)):
+            self.run(speed, 0)
+            actual = (encoder.lx() + encoder.rx()) / 2
+
         self.stop()
-        time.sleep(0)
-        self.run(speed, 0)
-        encoder.Distance()
-        time.sleep(encoder.getDistance(False) < distance)
-        self.stop()
-        encoder.getDistance(True)
 
 
 
