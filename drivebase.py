@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from encoder import Encoder
 import time
+import asyncio
 
 encoder = Encoder()
 
@@ -59,13 +60,13 @@ class DriveBase:
             self.lx(speedr)
             self.rx(speed)
 
-    def straight(self, speed, distance):
+    async def straight(self, speed, distance):
         start = (encoder.lx() + encoder.rx()) / 2
         while(encoder.getDistance(start)<distance):
             self.run(speed, 0)
         self.stop()
 
-    def turn(self, speed, angle):
+    async def turn(self, speed, angle):
         start_l = encoder.rx()
         start_r = encoder.rx()
         if angle > 0:
@@ -76,7 +77,7 @@ class DriveBase:
                 self.run(speed, -180)
         self.stop()
 
-    def steer(self, speed, angle):
+    async def steer(self, speed, angle):
         start_l = encoder.rx()
         start_r = encoder.rx()
         if(angle >0):
@@ -86,6 +87,9 @@ class DriveBase:
             while(encoder.getAngle_steer(start_l, start_r) > angle):
                 self.run(speed, -90)
         self.stop()
+
+    def print(self):
+        encoder.print()
         
 
     def stop(self):
