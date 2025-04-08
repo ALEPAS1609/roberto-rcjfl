@@ -1,5 +1,5 @@
-from .simplified import DriveBase
-from .simplified import Encoder
+from drivebase import DriveBase
+from drivebase import Encoder
 import numpy as np
 import time
 
