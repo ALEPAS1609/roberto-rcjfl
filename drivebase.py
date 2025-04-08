@@ -38,7 +38,6 @@ class DriveBase:
         if speed >=0:
             self.pwm_rx0.ChangeDutyCycle(speed)
             self.pwm_rx1.ChangeDutyCycle(0)
-        
         else:
             self.pwm_rx1.ChangeDutyCycle(abs(speed))
             self.pwm_rx0.ChangeDutyCycle(0)
@@ -47,13 +46,11 @@ class DriveBase:
         if speed >=0:
             self.pwm_lx0.ChangeDutyCycle(speed)
             self.pwm_lx1.ChangeDutyCycle(0)
-        
         else:
             self.pwm_lx1.ChangeDutyCycle(abs(speed))
             self.pwm_lx0.ChangeDutyCycle(0)
 
     def run(self, speed, angle):
-
         speedr = speed * ((90-abs(angle))/90)
         if(angle >=0):
             self.lx(speed)
@@ -63,43 +60,33 @@ class DriveBase:
             self.rx(speed)
 
     def straight(self, speed, distance):
+        start = (encoder.lx() + encoder.rx()) / 2
+        while(encoder.getDistance(start)<distance):
+            self.run(speed, 0)
         self.stop()
-        time.sleep(0)
-        self.run(speed, 0)
-        encoder.Distance()
-        time.sleep(encoder.getDistance(False) < distance)
-        self.stop()
-        encoder.getDistance(True)
-
-
 
     def turn(self, speed, angle):
-        self.stop()
-        time.sleep(0)
-        if(angle >0):
-            self.run(speed, 180)
+        start_l = encoder.rx()
+        start_r = encoder.rx()
+        if angle > 0:
+            while(encoder.getAngle_turn(start_l, start_r) < angle):
+                self.run(speed, 180)
         else:
-            self.run(speed, -180)
-        
-        encoder.Rotation_turn()
-        time.sleep(encoder.getRotation(False) < angle)
+            while(encoder.getAngle_turn(start_l, start_r) > angle):
+                self.run(speed, -180)
         self.stop()
-        encoder.getRotation(True)
 
     def steer(self, speed, angle):
-        self.stop()
-        time.sleep(0)
+        start_l = encoder.rx()
+        start_r = encoder.rx()
         if(angle >0):
-            self.run(speed, 90)
+            while(encoder.getAngle_steer(start_l, start_r) < angle):
+                self.run(speed, 90)
         else:
-            self.run(speed, -90)
-        
-        encoder.Rotation_steer()
-        time.sleep(encoder.getRotation(False) < angle)
+            while(encoder.getAngle_steer(start_l, start_r) > angle):
+                self.run(speed, -90)
         self.stop()
-        encoder.getRotation(True)
-
-
+        
 
     def stop(self):
         """Stop both motors."""

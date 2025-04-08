@@ -16,56 +16,28 @@ class Encoder:
         self.encoder_lx = RotaryEncoder(6, 5, max_steps=0)
         self.encoder_rx = RotaryEncoder(16, 26, max_steps=0)
 
-        self.distance = 0
-        self.distop = False
 
-        self.rotation = 0
-        self.rotstop = False
-
-    async def Distance(self):
-        step_start = (self.encoder_lx.steps + self.encoder_rx.steps / 2)
-        while (self.distop == False):
-           step = (self.encoder_lx.steps + self.encoder_rx.steps / 2)
-           self.distance = (((step - step_start) / self.ppr) / self.gear_ratio) * math.pi * self.weel_diameter #mm weel diameter
-           await asyncio.sleep(0)
-
-    def getDistance(self, reset):
-        if (reset):
-            self.distop = True
-            time.sleep(0)
-            self.distop = False
-        return self.distance 
-    
     def dis(self, start, actual):
         distance = (((actual - start) / self.ppr) / self.gear_ratio) * math.pi * self.weel_diameter #mm weel diameter
         return distance
+
+    def getDistance(self, start):
+        return self.dis(start, (self.lx() + self.rx() / 2))
+    
+    def getAngle_turn(self, start_lx, start_rx):
+        return ((self.dis(start_rx, self.rx()) + self.dis(start_lx, self.lx())) / self.axel_track) * (180 / math.pi)
+            
+    def getAngle_steer(self, start_lx, start_rx):
+        return ((self.dis(start_lx, self.lx()) - self.dis(start_rx, self.rx())) / self.axel_track) * (180 / math.pi)
+    
+    def lx(self):
+        return self.encoder_lx.steps
+    
+    def rx(self):
+        return self.encoder_rx.steps
+    
     def print(self):
         print(f"lx: {self.encoder_lx.steps} rx: {self.encoder_rx.steps}")
-
-    async def Rotation_turn(self):
-        step_start_lx = self.encoder_lx.steps
-        step_start_rx = self.encoder_rx.steps
-        while (self.rotstop == False):
-            step_lx = self.encoder_lx.steps
-            step_rx = self.encoder_rx.steps
-            self.rotation = ((self.dis(step_start_lx, step_lx) - self.dis(step_start_rx, step_rx)) / self.axel_track) * (180 / math.pi)
-            await asyncio.sleep(0)
-
-    async def Rotation_steer(self):
-        step_start_lx = self.encoder_lx.steps
-        step_start_rx = self.encoder_rx.steps
-        while (self.rotstop == False):
-            step_lx = self.encoder_lx.steps
-            step_rx = self.encoder_rx.steps
-            self.rotation = ((self.dis(step_start_lx, step_lx) + self.dis(step_start_rx, step_rx)) / self.axel_track) * (180 / math.pi)
-            await asyncio.sleep(0)
-
-    def getRotation(self, reset):
-        if (reset):
-            self.distop = True
-            time.sleep(0)
-            self.distop = False
-        return self.rotation
             
     def cleanup(self):
         self.encoder_lx.close()
