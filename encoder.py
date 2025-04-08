@@ -13,7 +13,7 @@ class Encoder:
         self.weel_diameter = 68 #mm
         self.axel_track = 183 # mm
 
-        self.encoder_lx = RotaryEncoder(5, 6, max_steps=0)
+        self.encoder_lx = RotaryEncoder(6, 5, max_steps=0)
         self.encoder_rx = RotaryEncoder(16, 26, max_steps=0)
 
         self.distance = 0
@@ -23,9 +23,9 @@ class Encoder:
         self.rotstop = False
 
     async def Distance(self):
-        step_start = (self.encoder_lx.steps + (self.encoder_rx.steps * -1) / 2)
+        step_start = (self.encoder_lx.steps + self.encoder_rx.steps / 2)
         while (self.distop == False):
-           step = (self.encoder_lx.steps + (self.encoder_rx.steps * -1) / 2)
+           step = (self.encoder_lx.steps + self.encoder_rx.steps / 2)
            self.distance = (((step - step_start) / self.ppr) / self.gear_ratio) * math.pi * self.weel_diameter #mm weel diameter
            await asyncio.sleep(0)
 
@@ -44,10 +44,10 @@ class Encoder:
 
     async def Rotation_turn(self):
         step_start_lx = self.encoder_lx.steps
-        step_start_rx = self.encoder_rx.steps * -1
+        step_start_rx = self.encoder_rx.steps
         while (self.rotstop == False):
             step_lx = self.encoder_lx.steps
-            step_rx = self.encoder_rx.steps * -1
+            step_rx = self.encoder_rx.steps
             self.rotation = ((self.dis(step_start_lx, step_lx) - self.dis(step_start_rx, step_rx)) / self.axel_track) * (180 / math.pi)
             await asyncio.sleep(0)
 
