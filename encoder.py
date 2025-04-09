@@ -8,8 +8,6 @@ class Encoder:
     def __init__(self):
         self.ppr = 11
         self.gear_ratio = 27
-        self.tsample = 0.02
-        self.tdisp = 0.5
         self.weel_diameter = 68 #mm
         self.axel_track = 183 # mm
 
@@ -22,7 +20,7 @@ class Encoder:
         return distance
 
     def getDistance(self, start):
-        return self.dis(start, (self.lx() + self.rx() / 2))
+        return self.dis(start, ((self.lx() + self.rx()) / 2))
     
     def getAngle_turn(self, start_lx, start_rx):
         return ((self.dis(start_rx, self.rx()) + self.dis(start_lx, self.lx())) / self.axel_track) * (180 / math.pi)
