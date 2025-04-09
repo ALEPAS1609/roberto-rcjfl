@@ -6,7 +6,7 @@ import asyncio
 
 class Encoder:
     def __init__(self):
-        self.ppr = 11
+        self.ppr = 16
         self.gear_ratio = 27
         self.weel_diameter = 68 #mm
         self.axel_track = 183 # mm
@@ -23,7 +23,7 @@ class Encoder:
         return self.dis(start, ((self.lx() + self.rx()) / 2))
     
     def getAngle_turn(self, start_lx, start_rx):
-        return ((self.dis(start_rx, self.rx()) + self.dis(start_lx, self.lx())) / self.axel_track) * (180 / math.pi)
+        return (((self.dis(start_rx, self.rx()) + (self.dis(start_lx, self.lx()) * -1)/2)) / (self.axel_track /2)) * (180 / math.pi)
             
     def getAngle_steer(self, start_lx, start_rx):
         return ((self.dis(start_lx, self.lx()) - self.dis(start_rx, self.rx())) / self.axel_track) * (180 / math.pi)

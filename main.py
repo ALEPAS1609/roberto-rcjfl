@@ -1,15 +1,17 @@
 from drivebase import DriveBase
-from drivebase import Encoder
 import numpy as np
 import time
+import asyncio
 
 
 try:
     drive = DriveBase()
 
     while True:
-        drive.straight(50, 10)
+        asyncio.run(drive.straight(50, 100))
+        drive.print()
         time.sleep(2)
+        
 
 
 
@@ -20,5 +22,4 @@ except KeyboardInterrupt:
 finally:
     drive.stop()       # Stop motors
     drive.cleanup()    # Clean up GPIO
-    Encoder.cleanup() 
     print("GPIO cleanup complete. Exiting program.")        
