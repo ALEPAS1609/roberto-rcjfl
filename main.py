@@ -15,24 +15,29 @@ def obstacle():
     asyncio.run(drive.straight(30, -1*(axel_track /2)))
     drive.stop()
     asyncio.run(drive.turn(30, 90))
-    drive.straight(30, metaOstacolo+distanzaDaMantenere)
+    while distance2.distance() < 0.05:
+        drive.run(30, 0)
     drive.stop()
-    drive.steer(30, -90)
-    drive.straight(30, metaOstacolo+distanzaDaMantenere*2)
+    asyncio.run(drive.turn(30, -90))
+    while distance2.distance() < 0.05:
+        drive.run(30, 0)
     drive.stop()
-    drive.turn(30, -90)
+    asyncio.run(drive.turn(30, -90))
     drive.stop()
-    drive.straight(30, metaOstacolo+distanzaDaMantenere*2)
-    drive.turn(30,verso*90)
+    while distance2.distance() > 0.05:
+        drive.run(30, 0)
+    drive.stop()
+    drive.turn(30,90)
+    drive.stop()
 
 try:
     
 
     while True:
-        asyncio.run(drive.straight(50, 100))
         if distance1.distance() < 0.05:
             obstacle()
-        time.sleep(2)
+        else:
+            drive.run(70, 0)
 
         
 
@@ -46,4 +51,3 @@ finally:
     drive.stop()       # Stop motors
     drive.cleanup()    # Clean up GPIO
     print("GPIO cleanup complete. Exiting program.")        
-
