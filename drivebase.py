@@ -62,12 +62,9 @@ class DriveBase:
 
     async def straight(self, speed, distance):
         start = ((encoder.lx() + encoder.rx()) / 2)
-        print(start)
         while(encoder.getDistance(start)<distance):
             self.run(speed, 0)
-        print(encoder.getDistance(start))
         self.stop()
-        self.print()
 
     async def turn(self, speed, angle):
         start_l = encoder.rx()
